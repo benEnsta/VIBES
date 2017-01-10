@@ -174,17 +174,18 @@ void Figure2D::drawForeground(QPainter *painter, const QRectF &rect)
     painter->setFont(axisTicksFont);
     painter->setPen(QColor(0,0,0));
 
-        for (double xtick=x0; xtick<qMax(rect.right(), rect.left()); xtick+=scale_x)
+    double y_lb = height();
+    for (double xtick=x0; xtick<qMax(rect.right(), rect.left()); xtick+=scale_x)
     {
         double x_wnd = mapFromScene(xtick,0).x();
 
-        painter->drawLine(x_wnd,0,x_wnd,5);
+        painter->drawLine(x_wnd,y_lb-5,x_wnd,y_lb);
         QString xtick_txt;
         if(fabs(xtick) < 1.0e-12)
             xtick_txt.setNum(xtick, 'f', 0);
         else
             xtick_txt.setNum(xtick, 'g');
-        painter->drawText(x_wnd+4,12, xtick_txt);
+        painter->drawText(x_wnd+4,y_lb-12, xtick_txt);
     }
 
     for (double ytick=y0; ytick<qMax(rect.top(),rect.bottom()); ytick+=scale_y)
