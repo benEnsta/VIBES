@@ -6,6 +6,18 @@ compiler:
  - gcc
  - clang
 
+os:
+ - linux
+ - osx
+
+# Exclude the clang on Linux combination: Qt 5.0 headers generates errors with clang
+matrix:
+  exclude:
+   - compiler: clang
+     os: linux
+   - compiler: gcc
+     os: osx
+
 before_install:
  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-add-repository --yes ppa:ubuntu-sdk-team/ppa; fi
  - if [ $TRAVIS_OS_NAME == linux ]; then sudo apt-get update -qq > output; fi
@@ -19,14 +31,12 @@ before_script:
  - cmake --version
  - cmake ../
 
-script: make
+script:
+  - make
+  - if [ $TRAVIS_OS_NAME == linux ]; then export vibes_exec=VIBes-viewer; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then export vibes_exec=VIBes-viewer.app; fi
+  - mv $vibes_exec $TRAVIS_BUILD_DIR/$vibes_exec
 
-os:
- - linux
- - osx
-
-# Exclude the clang on Linux combination: Qt 5.0 headers generates errors with clang
-matrix:
-  exclude:
-   - compiler: clang
-     os: linux
+after_failure: cat tests/test_cmake_build/*.log
+after_success:
+  - curl --ftp-create-dirs --ftp-ssl -p -k  -T $TRAVIS_BUILD_DIR/$vibes_exec --user $FTP_USER:$FTP_PASSWD  ftp://bdesroch.homenet.org/gittmp/VIBES/$(date +"%Y%m%d")/

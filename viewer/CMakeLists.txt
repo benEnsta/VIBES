@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.9)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
 
 PROJECT(VIBes_viewer)
 
@@ -75,9 +75,9 @@ ADD_EXECUTABLE(${VIBES_viewer_EXE} WIN32 MACOSX_BUNDLE ${VIBes_viewer_SOURCES} $
 # Qt5 Modules
 QT5_USE_MODULES(${VIBES_viewer_EXE} Widgets Gui Core Network Svg)
 
-IF(UNIX)
-		INSTALL(TARGETS ${VIBES_viewer_EXE} DESTINATION bin)
-ENDIF(UNIX)
+#IF(UNIX)
+#		INSTALL(TARGETS ${VIBES_viewer_EXE} DESTINATION bin)
+#ENDIF(UNIX)
 
 # Packaging
 IF(APPLE)
@@ -95,11 +95,11 @@ IF(APPLE)
     INSTALL(TARGETS ${VIBES_viewer_EXE} BUNDLE DESTINATION .)#${CMAKE_CURRENT_BINARY_DIR})
 
     # Copy API files
-    install(FILES ../client-api/C/vibes.h ../client-api/C/vibes.c DESTINATION "Vibes C")
-    install(DIRECTORY ../client-api/C/examples DESTINATION "Vibes C")
+    #install(FILES ../client-api/C/vibes.h ../client-api/C/vibes.c DESTINATION "Vibes C")
+    #install(DIRECTORY ../client-api/C/examples DESTINATION "Vibes C")
 
-    install(DIRECTORY ../client-api/C++/src DESTINATION "Vibes C++")
-    install(DIRECTORY ../client-api/C++/examples DESTINATION "Vibes C++")
+    #install(DIRECTORY ../client-api/C++/src DESTINATION "Vibes C++")
+    #install(DIRECTORY ../client-api/C++/examples DESTINATION "Vibes C++")
 
     # Setup DMG window appearance: background image, size and icon layout
     SET(CPACK_DMG_BACKGROUND_IMAGE ${CMAKE_CURRENT_SOURCE_DIR}/VIBes_DMG_bg/VIBes_DMG_bg.jpg)
