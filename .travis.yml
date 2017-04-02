@@ -9,6 +9,10 @@ compiler:
 os:
  - linux
  - osx
+env:
+  global:
+  - secure: T7k9pP/+wWCzD/h1RYUOKhOrdd9exGU94mjJA6z5pGvRAwBT6znftNJ25mTMrDayB/mm9w6CsRO7WIsiMf3sIzCeZz2uVjoMK82yHPCWnvrcFNReC8g8HC5BD49cnZmtI8C3BszuIsgbZRPxkwtHc3KK5rsdqJejmZuepKYJXrI=
+  - secure: j3OVDTTaCOHRy5rdLGxuntQOdBrkijCrGMAr9doVnMCOlNxhMtOo+mgs0W/El4mj4iC+xHdb1lzL/4f3Y+gTPTINNof8GKR74k4DvHVuQl5VWvYluNwUk3qcS1j1WIUhdU2pn1HniNQ15bpDJUcgtPsWnDPV+YKittgDVikL8BA=
 
 # Exclude the clang on Linux combination: Qt 5.0 headers generates errors with clang
 matrix:
@@ -39,4 +43,16 @@ script:
 
 after_failure: cat tests/test_cmake_build/*.log
 after_success:
-  - curl --ftp-create-dirs --ftp-ssl -p -k  -T $TRAVIS_BUILD_DIR/$vibes_exec --user $FTP_USER:$FTP_PASSWD  ftp://bdesroch.homenet.org/gittmp/VIBES/$(date +"%Y%m%d")/
+  - curl --ftp-create-dirs --ftp-ssl -p -k  -T $TRAVIS_BUILD_DIR/$vibes_exec --user $FTP_USER:$FTP_PASSWD  ftp://bdesroch.homenet.org/gittmp/VIBES/$(date +"%Y%m%d")/ ;
+  # -|
+  #   if [ $TRAVIS_OS_NAME == linux ]; then
+  #     wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" ;
+  #     chmod a+x linuxdeployqt*.AppImage ;
+  #     unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH ;
+  #     ./linuxdeployqt*.AppImage ./appdir/usr/share/applications/*.desktop -bundle-non-qt-libs ;
+  #     ./linuxdeployqt*.AppImage ./appdir/usr/share/applications/*.desktop -appimage ;
+  #     find ./appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq ;
+  #     curl --ftp-create-dirs --ftp-ssl -p -k  -T *.AppImage --user $FTP_USER:$FTP_PASSWD  ftp://bdesroch.homenet.org/gittmp/VIBES/$(date +"%Y%m%d")/ ;
+  #   else
+  #     curl --ftp-create-dirs --ftp-ssl -p -k  -T $TRAVIS_BUILD_DIR/$vibes_exec --user $FTP_USER:$FTP_PASSWD  ftp://bdesroch.homenet.org/gittmp/VIBES/$(date +"%Y%m%d")/ ;
+  #   fi
