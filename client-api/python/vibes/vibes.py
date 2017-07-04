@@ -6,6 +6,8 @@ import math
 import sys
 import subprocess
 
+from .diffBox2poly import diffBox2poly, is_strict_interior_subset
+
 
 class vibes(object):
     channel = None
@@ -278,13 +280,29 @@ class vibes(object):
 
     @classmethod
     def drawBoxDiff(cls, X0, X, color='r', **kwargs):
-        msg = {'action': 'draw',
-               'shape': {'type': 'boxes diff',
-                         'bounds': [X0, X],
-                         'format': color
-                        }
-              }
-        cls._write(msg, **kwargs)
+        if is_strict_interior_subset(X0, X):
+          cls.drawBox(X0[0][0], X0[0][1], X0[1][0], X0[1][1], color)
+          cls.drawBox(X[0][0], X[0][1], X[1][0], X[1][1], "[w]")
+        elif (X0[0][0] == X[0][0] and X0[0][1] == X[0][1]):
+            if X0[1][0] != X[1][0]:
+              cls.drawBox(X0[0][0], X0[0][1], X0[1][0], X[1][0], color, **kwargs)
+            if X0[1][1] != X[1][1]:
+              cls.drawBox(X0[0][0], X0[0][1], X[1][1], X0[1][1], color, **kwargs)
+        elif (X0[1][0] == X[1][0] and X0[1][1] == X[1][1]):
+            if X0[0][0] != X[0][0]:
+              cls.drawBox(X0[0][0], X[0][0], X0[1][0], X0[1][1], color, **kwargs)
+            if X0[0][1] != X[0][1]:
+              cls.drawBox(X[0][1], X0[0][1], X0[1][0], X0[1][1], color, **kwargs)
+        else:
+          P = diffBox2poly(X0, X)
+          cls.drawPolygon(P, color, **kwargs)
+        # msg = {'action': 'draw',
+        #        'shape': {'type': 'boxes diff',
+        #                  'bounds': [X0, X],
+        #                  'format': color
+        #                 }
+        #       }
+        # cls._write(msg, **kwargs)
 
     @classmethod
     def drawLine(cls, points, color='r', **kwargs):
