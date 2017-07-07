@@ -76,6 +76,7 @@ public:
            VibesGraphicsLineType,
            VibesGraphicsBoxesType,
            VibesGraphicsBoxesUnionType,
+          //  VibesGraphicsBoxesDiffType,
            VibesGraphicsPointsType,
            // Do not remove the following value! It signals the end of VibesGraphicsItem types
            VibesGraphicsLastType,
@@ -221,6 +222,17 @@ protected:
     bool computeProjection(int dimX, int dimY);
 };
 
+
+/// The difference of two boxes
+
+// class VibesGraphicsBoxesDiff : public QGraphicsPolygonItem, public VibesGraphicsItem
+// {
+//     VIBES_GRAPHICS_ITEM(VibesGraphicsPolygon, QGraphicsPolygonItem)
+//     VIBES_GEOMETRY_CHANGING_PROPERTIES("bounds")
+// protected:
+//     bool parseJsonGraphics(const QJsonObject &json);
+//     bool computeProjection(int dimX, int dimY);
+// };
 
 /// An ellipse or confidence ellipse
 

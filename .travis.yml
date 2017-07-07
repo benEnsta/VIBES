@@ -38,7 +38,11 @@ before_script:
 script:
   - make
   - if [ $TRAVIS_OS_NAME == linux ]; then export vibes_exec=VIBes-viewer; fi
-  - if [ $TRAVIS_OS_NAME == osx ]; then export vibes_exec=VIBes-viewer.app; fi
+  - if [ $TRAVIS_OS_NAME == osx ]; then
+      make install;
+      tar -zcvf VIBes-viewer.tar.gz VIBes-viewer.app;
+      export vibes_exec=VIBes-viewer.tar.gz;
+    fi
   - mv $vibes_exec $TRAVIS_BUILD_DIR/$vibes_exec
 
 after_failure: cat tests/test_cmake_build/*.log

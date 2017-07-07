@@ -29,7 +29,7 @@ def drawDiffBox_(X0, X, color, **kwargs):
 
 
 def diffBox2poly(X0, X):
-
+    # print(X0, X)
 
     LX = [Point(X[0][0], X[1][0]),
            Point(X[0][0], X[1][1]),
@@ -72,6 +72,7 @@ def diffBox2poly(X0, X):
       last_P = P[-1]
       # print(last_P)
       for i in range(len(L)):
+        # print(L[i])
         p0, p1 = L[i]
         if last_P == p0:
           P.append(p1)

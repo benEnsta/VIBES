@@ -185,6 +185,10 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     {
         return new VibesGraphicsBoxesUnion();
     }
+    // else if (type == "boxes diff")
+    // {
+    //     return new VibesGraphicsBoxesDiff();
+    // }
     else if (type == "ellipse")
     {
         return new VibesGraphicsEllipse();
@@ -635,6 +639,98 @@ bool VibesGraphicsBoxesUnion::computeProjection(int dimX, int dimY)
 
 
 //
+// VibesGraphicsBoxesDiff
+//
+
+// bool VibesGraphicsBoxesDiff::parseJsonGraphics(const QJsonObject &json)
+// {
+//     // Now process shape-specific properties
+//     // (we can only update properties of a shape, but mutation into another type is not supported)
+//   if (json.contains("type"))
+//   {
+//       // Retrieve type
+//       QString type = json["type"].toString();
+//
+//       // VibesGraphicsBox has JSON type "box"
+//       if (type == "boxex diff")
+//       {
+//           QJsonArray bounds = json["X0"].toArray();
+//           // We need at least a 2-D box. Number of bounds has to be even.
+//           if (bounds.size() < 4 || bounds.size() % 2 != 0)
+//               return false;
+//
+//           QJsonArray bounds = json["X"].toArray();
+//           // We need at least a 2-D box. Number of bounds has to be even.
+//           if (bounds.size() < 4 || bounds.size() % 2 != 0)
+//               return false;
+//
+//           // Compute dimension
+//           this->_nbDim = bounds.size() / 2;
+//
+//           // Set graphical properties
+//           this->setPen(vibesDefaults.pen(jsonValue("EdgeColor").toString()));
+//           this->setBrush(vibesDefaults.brush(jsonValue("FaceColor").toString()));
+//
+//           // Update successful
+//           return true;
+//         }
+//     }
+//
+//     // Unknown or empty JSON, update failed
+//     return false;
+// }
+
+// bool VibesGraphicsBoxesDiff::computeProjection(int dimX, int dimY)
+// {
+      // const QJsonObject & json = this->_json;
+      //
+      // // Get shape color (or default if not specified)
+      // const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
+      // const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString());
+      //
+      // Q_ASSERT(json.contains("type"));
+      // Q_ASSERT(json["type"].toString() == "boxex diff");
+      //
+      // QJsonArray X0 = json["X0"].toArray();
+      // QJsonArray X = json["X"].toArray();
+      // // Compute dimension
+      // Q_ASSERT(this->_nbDim == bounds.size() / 2);
+      // Q_ASSERT(bounds.size() >= (2 * (qMax(dimX, dimY) + 1)));
+      //
+      // // Read bounds
+      // double X0_lb_x = X0[2 * dimX].toDouble();
+      // double X0_ub_x = X0[2 * dimX + 1].toDouble();
+      // double X0_lb_y = X0[2 * dimY].toDouble();
+      // double X0_ub_y = X0[2 * dimY + 1].toDouble();
+      //
+      // double X_lb_x = X[2 * dimX].toDouble();
+      // double X_ub_x = X[2 * dimX + 1].toDouble();
+      // double X_lb_y = X[2 * dimY].toDouble();
+      // double X_ub_y = X[2 * dimY + 1].toDouble();
+      //
+      // QPolygonF poly_X0, poly_X;
+      // poly_X0 << QPointF(X0_lb_x, X0_lb_y) << QPointF(X0_lb_x, X0_ub_y)
+      //         << QPointF(X0_ub_x, X0_ub_y) << QPointF(X0_ub_x, X0_lb_y);
+      //
+      // poly_X << QPointF(X_lb_x, X_lb_y) << QPointF(X_lb_x, X_ub_y)
+      //        << QPointF(X_ub_x, X_ub_y) << QPointF(X_ub_x, X_lb_y);
+      //
+      // // Update rectangle
+      // this->setRect(lb_x, lb_y, ub_x - lb_x, ub_y - lb_y);
+      //
+      // // Update rectangle color
+      // this->setPen(pen);
+      // this->setBrush(brush);
+      // QString msg;// = QString("[%1, %2]x[%3, %4]").arg(lb_x).arg(ub_x).arg(lb_y).arg(ub_y);
+      // msg.sprintf("x: [%f ; %f]\ny: [%f ; %f]\n %f x %f", lb_x, ub_x, lb_y, ub_y, ub_x - lb_x, ub_y - lb_y);
+      // this->setToolTip(msg);
+
+      // Update successful
+      // return true;
+// }
+
+
+//
 // VibesGraphicsEllipse
 //
 
@@ -812,7 +908,7 @@ void VibesGraphicsEllipse::axisAngleFromCovarianceK(const double &sxx, const dou
 }
 
 //
-// VibesGraphicsBoxesUnion
+// VibesGraphicsLine
 //
 
 bool VibesGraphicsLine::parseJsonGraphics(const QJsonObject &json)
