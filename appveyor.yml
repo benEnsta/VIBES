@@ -1,0 +1,71 @@
+version: 0.2.{build}
+os: Visual Studio 2015
+clone_folder: C:\projects\VIBES
+test: off
+configuration:
+    - Release
+    # - Debug
+# branches:
+  # only:
+    # - master
+environment:
+  global:
+    DISTUTILS_USE_SDK: 1
+    MSSdk: 1
+  matrix:
+    - CMAKE_PLATFORM: "Visual Studio 14 2015"
+      QTDIR: "C:\\Qt\\5.9\\msvc2015"
+      ARCH: "win32"
+    - CMAKE_PLATFORM: "Visual Studio 14 2015 Win64"
+      QTDIR: "C:\\Qt\\5.9\\msvc2015_64"
+      ARCH: "win64"
+
+
+install:
+  - cmd: '"%VS140COMNTOOLS%\..\..\VC\vcvarsall.bat" %PLATFORM%'
+
+artifacts:
+  - path: "**\*.zip"
+    name: vibes_exe
+
+build_script:
+  - echo Running cmake..  .
+  - cd c:\projects\VIBES\viewer
+  - mkdir build
+  - cd build
+  - set PATH=%PATH%;%QTDIR%\bin
+  - cmake -G "%CMAKE_PLATFORM%" ..
+  - set MSBuildLogger="C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - set MSBuildOptions=/v:m /p:Configuration=%Configuration% /logger:%MSBuildLogger%
+  - cmake --build . --config Release
+  - ls
+  - mkdir VIBes-viewer
+  - cp Release\VIBes-viewer.exe VIBes-viewer\VIBes-viewer.exe
+  - windeployqt  VIBes-viewer\VIBes-viewer.exe
+  - 7z a Vibes_%ARCH%.zip VIBes-viewer\*
+  - ls
+
+deploy:
+  provider: FTP
+  protocol: ftps
+  host: bdesroch.homenet.org
+  username: git
+  password:
+    secure: U58Tazcrcj6n+oP1CxfRCQ==
+  folder: gittmp/win
+  artifact: vibes_exe
+
+#
+#
+# deploy:
+#
+# - provider: GitHub
+#
+#   auth_token:
+#
+#     secure: wIeJZ9xcTslfsgvqCGez8oOC0YxhmM8LI0iJ7gBgsI7ykVeWWLEFfAQSIHgbac6k
+#
+#   artifact: pip_wheel
+#
+#   draft: true
+#   appveyor_repo_tag: true        # deploy on tag push only

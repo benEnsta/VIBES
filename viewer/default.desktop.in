@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=@VIBES_viewer_EXE@
+Exec=AppRun %F
+Icon=vibes
+Comment=Edit this default file
+Terminal=false

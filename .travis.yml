@@ -40,14 +40,27 @@ script:
   - if [ $TRAVIS_OS_NAME == linux ]; then export vibes_exec=VIBes-viewer; fi
   - if [ $TRAVIS_OS_NAME == osx ]; then
       make install;
+      make package;
       tar -zcvf VIBes-viewer.tar.gz VIBes-viewer.app;
-      export vibes_exec=VIBes-viewer.tar.gz;
+      find . -name *.dmg;
+      export vibes_exec=VIBes-0.1.1-Darwin.dmg;
+      mv $vibes_exec $TRAVIS_BUILD_DIR/$vibes_exec;
     fi
-  - mv $vibes_exec $TRAVIS_BUILD_DIR/$vibes_exec
 
 after_failure: cat tests/test_cmake_build/*.log
 after_success:
-  - curl --ftp-create-dirs --ftp-ssl -p -k  -T $TRAVIS_BUILD_DIR/$vibes_exec --user $FTP_USER:$FTP_PASSWD  ftp://bdesroch.homenet.org/gittmp/VIBES/$(date +"%Y%m%d")/ ;
+  - if [ $TRAVIS_OS_NAME == linux ]; then
+      echo $(pwd);
+      ls;
+      wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage";
+      chmod a+x linuxdeployqt*.AppImage;
+      echo $(pwd);
+      ./linuxdeployqt*.AppImage  $vibes_exec -appimage;
+      export vibes_exec=VIB*.AppImage;
+      mv $vibes_exec $TRAVIS_BUILD_DIR/$vibes_exec;
+    fi
+
+    curl --ftp-create-dirs --ftp-ssl -p -k  -T $TRAVIS_BUILD_DIR/$vibes_exec --user $FTP_USER:$FTP_PASSWD  ftp://bdesroch.homenet.org/gittmp/VIBES/$(date +"%Y%m%d")/ ;
   # -|
   #   if [ $TRAVIS_OS_NAME == linux ]; then
   #     wget -c "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage" ;

@@ -13,6 +13,8 @@
 /client-api/C++/examples/build/
 /viewer-build
 *-build/
-
+*build*
+dist*
+vibes.egg*
 doxygen
 *.pyc

@@ -1,6 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.1.0)
 
 PROJECT(VIBes_viewer)
+set(PACKAGE_VERSION "0.2.3")
 
 # Viewer executable name
 SET(VIBES_viewer_EXE VIBes-viewer)
@@ -75,9 +76,15 @@ ADD_EXECUTABLE(${VIBES_viewer_EXE} WIN32 MACOSX_BUNDLE ${VIBes_viewer_SOURCES} $
 # Qt5 Modules
 QT5_USE_MODULES(${VIBES_viewer_EXE} Widgets Gui Core Network Svg)
 
-#IF(UNIX)
-#		INSTALL(TARGETS ${VIBES_viewer_EXE} DESTINATION bin)
-#ENDIF(UNIX)
+IF(UNIX)
+		configure_file(
+			${CMAKE_CURRENT_SOURCE_DIR}/default.desktop.in
+			${CMAKE_CURRENT_BINARY_DIR}/default.desktop
+		)
+		configure_file(${CMAKE_SOURCE_DIR}/icons/vibes_512.png ${CMAKE_CURRENT_BINARY_DIR}/vibes.png COPYONLY)
+
+		# INSTALL(TARGETS ${VIBES_viewer_EXE} DESTINATION bin)
+ENDIF(UNIX)
 
 # Packaging
 IF(APPLE)
