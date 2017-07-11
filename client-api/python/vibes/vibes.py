@@ -72,17 +72,19 @@ class vibes(object):
     ##########################################################################
 
     @classmethod
-    def newFigure(cls, figure=''):
+    def newFigure(cls, figure='', width=500, height=500):
         """Create a new figure named figureName.
 
         Args:
             figure (string): name of the new figure
-
+            width (int): optional width of the figure in pixels
+            height (int): optional height of the figure in pixels
         """
         if not figure == '':
             cls.current_fig = figure
         msg ={'action': 'new'}
         cls._write(msg, figure=figure)
+        cls.setFigureSize(width, height, figure=figure)
 
     @classmethod
     def setFigureProperties(cls, properties, **kwargs):
@@ -280,6 +282,8 @@ class vibes(object):
 
     @classmethod
     def drawBoxDiff(cls, X0, X, color='r', **kwargs):
+        if X[0].is_degenerated() and X[1].is_degenerated():
+          cls.drawBox(X0[0][0], X0[0][1], X0[1][0], X0[1][1], color)
         if is_strict_interior_subset(X0, X):
           cls.drawBox(X0[0][0], X0[0][1], X0[1][0], X0[1][1], color)
           cls.drawBox(X[0][0], X[0][1], X[1][0], X[1][1], "[w]")
