@@ -233,6 +233,10 @@ VibesGraphicsItem * VibesGraphicsItem::newWithType(const QString type)
     {
         return new VibesGraphicsRaster();
     }
+    else if (type == "text")
+    {
+        return new VibesGraphicsText();
+    }
     return 0;
 }
 
@@ -1781,6 +1785,83 @@ bool VibesGraphicsRaster::computeProjection(int dimX, int dimY)
         pixmap_item->setTransform(transform);
 
         this->addToGroup(pixmap_item);
+    }
+
+    // Update successful
+    return true;
+}
+
+
+//
+// VibesGraphicsText
+//
+
+bool VibesGraphicsText::parseJsonGraphics(const QJsonObject& json)
+{
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    if (json.contains("type"))
+    {
+        // Retrieve type
+        QString type = json["type"].toString();
+
+        // VibesGraphicsPie has JSON type "position"
+        if (type == "text" && json.contains("position") && json.contains("text"))
+        {
+            QJsonArray position = json["position"].toArray();
+            if (position.size() != 2) return false;
+//            // Compute dimension
+            this->_nbDim = position.size();
+
+            // Update successful
+            return true;
+        }
+    }
+
+    // Unknown or empty JSON, update failed
+    return false;
+}
+// #define GET_WITH_DEFAULT(dict,key,type,default_value) \
+// 	dict.contains[key] ? dict[key].type
+bool VibesGraphicsText::computeProjection(int dimX, int dimY)
+{
+    const QJsonObject & json = this->_json;
+    // Get ring color (or default if not specified)
+    const QBrush & brush = vibesDefaults.brush(jsonValue("FaceColor").toString());
+    const QPen & pen = vibesDefaults.pen(jsonValue("EdgeColor").toString());
+
+    // Now process shape-specific properties
+    // (we can only update properties of a shape, but mutation into another type is not supported)
+    Q_ASSERT(json.contains("type"));
+    // VibesGraphicsText has JSON type "text"
+    Q_ASSERT(json["type"].toString() == "text");
+
+    QString text = json["text"].toString();
+		// Get property with default value
+    double scale = json.contains("scale") ?  json["scale"].toDouble() : 1. ;
+		QString fontName = json.contains("fontName") ? json["fontName"].toString() : "Helvetica" ;
+		int fontSize = json.contains("fontSize") ? json["fontSize"].toInt() : 1 ;
+
+    QJsonArray pos = json["position"].toArray();
+    Q_ASSERT(pos.size() == 2);
+    // Body
+    {
+        QFont textFont(fontName, fontSize);
+        QGraphicsTextItem * QGtext = new QGraphicsTextItem(text);
+        QGtext->setFont(textFont);
+//        QGtext->adjustSize();
+        QRectF bbox = QGtext->boundingRect();
+        QTransform T;
+        T.scale(scale, -scale).translate(-bbox.width()/(2.), -bbox.height()/(2.));
+        T.translate( pos[0].toDouble()/scale, -pos[1].toDouble()/scale);
+        QGtext->setTransform(T);
+        // qDebug() << QGtext->transform() << fontSize << fontName;
+
+        QGtext->setDefaultTextColor(pen.color());
+
+        this->addToGroup(QGtext);
+
+
     }
 
     // Update successful

@@ -499,7 +499,7 @@ class vibes(object):
         cls._write(msg, **kwargs)
 
     @classmethod
-    def drawText(cls, cx, cy, text, scale, color='r', **kwargs):
+    def drawText(cls, cx, cy, text, scale=1, color='r', **kwargs):
         """Draw a text <text> at position (cx, cy)
 
         Args:
